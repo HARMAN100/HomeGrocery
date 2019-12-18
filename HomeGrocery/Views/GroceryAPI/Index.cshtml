@@ -1,0 +1,228 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Grocery</h2>
+
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <br />
+                <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-GroceryName">
+                            Grocery Name <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="GroceryName" required="required" class="form-control col-md-7 col-xs-12" GroceryName="GroceryName">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-GroceryName">
+                            Grocery Type <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="GroceryType" required="required" class="form-control col-md-7 col-xs-12" GroceryName="GroceryType">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-GroceryName">
+                            Price <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="Price" required="required" class="form-control col-md-7 col-xs-12" GroceryName="Price">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-GroceryName">
+                            Quantity <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="Quantity" required="required" class="form-control col-md-7 col-xs-12" GroceryName="Quantity">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-GroceryName">
+                            Available <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="Available" required="required" class="form-control col-md-7 col-xs-12" GroceryName="Available">
+                        </div>
+                    </div>
+
+                    <div class="ln_solid"></div>
+                    <input type="hidden" id="ID" GroceryName="ID" />
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <button type="submit" class="btn btn-success" id="btn1">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Grocery List</h2>
+
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class="table-responsive">
+                <table class="table table-striped jambo_table bulk_action" id="tab1">
+                    <tr class="headings">
+                        <th class="column-title" width="180px"># </th>
+                        <th class="column-title" width="380px">GroceryName </th>
+                        <th class="column-title" width="180px">GroceryType </th>
+                        <th class="column-title" width="180px">Price </th>
+                        <th class="column-title" width="180px">Quantity  </th>
+                        <th class="column-title" width="180px">Available  </th>
+                        <th class="column-title no-link last" width="240px">
+                            <span class="nobr">Action</span>
+                        </th>
+                    </tr>
+
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function AddEditRecord(id, GroceryName, GroceryType, Price, Quantity,Available) {
+        $("#GroceryName").val(GroceryName);
+        $("#GroceryType").val(GroceryType);
+        $("#Price").val(Price);
+        $("#Quantity").val(Quantity);
+        $("#Available").val(Available);
+        $("#ID").val(id);
+    }
+
+    function UpdateRecord() {
+        var GroceryGroceryName = $("#GroceryName").val();
+        var GroceryType = $("#GroceryType").val();
+        var Price = $("#Price").val();
+        var Quantity = $("#Quantity").val();
+        var Available = $("#Available").val();
+        $.ajax({
+            type: "put",
+            contentType: "application/json;charset=utf-8",
+            url: "/api/Groceries/" + $("#ID").val(),
+            data: JSON.stringify({
+                ID: $("#ID").val(),
+                GroceryName: $("#GroceryName").val(),
+                GroceryType: $("#GroceryType").val(),
+                Price: $("#Price").val(),
+                Quantity: $("#Quantity").val(),
+                Available: $("#Available").val()
+            }),
+
+            dataType: "JSON",
+
+            success: function (data) {
+                $("#tab1").find("tr:gt(0)").remove();
+                $.getJSON("/api/Groceries/", function (data) {
+                    $("#tab1").css("display", "block");
+                    $.each(data, function (key, val) {
+                        $("<tr class='even pointer'><td width='180px'>" + val.ID + "</td><td width='180px'>" + val.GroceryName + "</td><td width='180px'>" + val.GroceryType + "</td><td width='180px'>" + val.Price + "</td><td width='180px'>" + val.Quantity + "</td><td width='180px'>" + val.Available + "</td><td width='240px'>" + "<button class='btn btn-warning btn-xs' onclick='AddEditRecord(" + val.ID + ',"' + val.GroceryName + '","' + val.GroceryType + '","' + val.Price + '","' + val.Quantity + '","' + val.Available + '"' + ");'" + ">Edit</button> <button class='btn btn-danger btn-xs' onclick='DeleteRecord(" + val.ID + ");'" + ">Delete</button>" + "</td></tr>").appendTo($("#tab1"));
+
+                    })
+
+                })
+
+            }
+        });
+    }
+    //Delete
+    function DeleteRecord(ID) {
+        $.ajax({
+
+            type: "DELETE",
+
+            contentType: "application/json;charset=utf-8",
+
+            url: "/api/Groceries/" + ID,
+
+            data: JSON.stringify({
+                id: ID,
+            }),
+            dataType: "JSON",
+            success: function (data) {
+                $("#tab1").find("tr:gt(0)").remove();
+                $.getJSON("/api/Groceries/", function (data) {
+                    $("#tab1").css("display", "block");
+                    $.each(data, function (key, val) {
+                        $("<tr class='even pointer'><td width='180px'>" + val.ID + "</td><td width='180px'>" + val.GroceryName + "</td><td width='180px'>" + val.GroceryType + "</td><td width='180px'>" + val.Price + "</td><td width='180px'>" + val.Quantity + "</td><td width='180px'>" + val.Available + "</td><td width='240px'>" + "<button class='btn btn-warning btn-xs' onclick='AddEditRecord(" + val.ID + ',"' + val.GroceryName + '","' + val.GroceryType + '","' + val.Price + '","' + val.Quantity + '","' + val.Available + '"' + ");'" + ">Edit</button> <button class='btn btn-danger btn-xs' onclick='DeleteRecord(" + val.ID + ");'" + ">Delete</button>" + "</td></tr>").appendTo($("#tab1"));
+
+                    })
+
+                })
+            }
+        });
+    }
+    $(document).ready(function () {
+        $("#tab1").css("display", "none");
+        $.getJSON("/api/Groceries/", function (data) {
+            $("#tab1").css("display", "block");
+            $.each(data, function (key, val) {
+                $("<tr class='even pointer'><td width='180px'>" + val.ID + "</td><td width='180px'>" + val.GroceryName + "</td><td width='180px'>" + val.GroceryType + "</td><td width='180px'>" + val.Price + "</td><td width='180px'>" + val.Quantity + "</td><td width='180px'>" + val.Available + "</td><td width='240px'>" + "<button class='btn btn-warning btn-xs' onclick='AddEditRecord(" + val.ID + ',"' + val.GroceryName + '","' + val.GroceryType + '","' + val.Price + '","' + val.Quantity + '","' + val.Available + '"' + ");'" + ">Edit</button> <button class='btn btn-danger btn-xs' onclick='DeleteRecord(" + val.ID + ");'" + ">Delete</button>" + "</td></tr>").appendTo($("#tab1"));
+            });
+        })
+
+        //POST
+        $("#btn1").click(function () {
+            if ($("#ID").val() > 0) {
+                UpdateRecord();
+            }
+            else {
+                var GroceryName = $("#GroceryName").val();
+                var GroceryType = $("#GroceryType").val();
+                var Price = $("#Price").val();
+                var Quantity = $("#Quantity").val();
+                var Available = $("#Available").val();
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json;charset=utf-8",
+                    url: "/api/Groceries/",
+                    data: JSON.stringify({
+                        GroceryName: $("#GroceryName").val(),
+                        GroceryType: $("#GroceryType").val(),
+                        Price: $("#Price").val(),
+                        Quantity: $("#Quantity").val(),
+                        Available: $("#Available").val(),
+                    }),
+                    dataType: "JSON",
+                    success: function (data) {
+                        $("#ID").val('');
+                        $("#tab1").find("tr:gt(0)").remove();
+                        $.getJSON("/api/Groceries/", function (data) {
+                            $("#tab1").css("display", "block");
+                            $.each(data, function (key, val) {
+                                $("<tr class='even pointer'><td width='180px'>" + val.ID + "</td><td width='180px'>" + val.GroceryName + "</td><td width='180px'>" + val.GroceryType + "</td><td width='180px'>" + val.Price + "</td><td width='180px'>" + val.Quantity + "</td><td width='180px'>" + val.Available + "</td><td width='240px'>" + "<button class='btn btn-warning btn-xs' onclick='AddEditRecord(" + val.ID + ',"' + val.GroceryName + '","' + val.GroceryType + '","' + val.Price + '","' + val.Quantity + '","' + val.Available + '"' + ");'" + ">Edit</button> <button class='btn btn-danger btn-xs' onclick='DeleteRecord(" + val.ID + ");'" + ">Delete</button>" + "</td></tr>").appendTo($("#tab1"));
+
+                            })
+
+                        })
+
+
+
+                    }
+                });
+            }
+
+        })
+    });
+
+</script>
+
